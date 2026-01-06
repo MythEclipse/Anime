@@ -1,9 +1,29 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
-    <style name="Base.Theme.Anime" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+    <!-- Base application theme (Dark) -->
+    <style name="Base.Theme.Anime" parent="Theme.Material3.Dark.NoActionBar">
+        <!-- Primary colors -->
+        <item name="colorPrimary">@color/primary</item>
+        <item name="colorPrimaryVariant">@color/primary_dark</item>
+        <item name="colorOnPrimary">@color/black</item>
+        
+        <!-- Secondary colors -->
+        <item name="colorSecondary">@color/accent_purple</item>
+        <item name="colorOnSecondary">@color/black</item>
+        
+        <!-- Background -->
+        <item name="android:colorBackground">@color/background_dark</item>
+        <item name="colorSurface">@color/background_surface</item>
+        <item name="colorOnSurface">@color/text_primary</item>
+        
+        <!-- Status bar -->
+        <item name="android:statusBarColor">@color/background_dark</item>
+        <item name="android:navigationBarColor">@color/background_dark</item>
     </style>
 
     <style name="Theme.Anime" parent="Base.Theme.Anime" />
+    
+    <!-- Splash Screen Theme -->
+    <style name="Theme.Anime.Splash" parent="Theme.Anime">
+        <item name="android:windowBackground">@color/background_dark</item>
+    </style>
 </resources>
