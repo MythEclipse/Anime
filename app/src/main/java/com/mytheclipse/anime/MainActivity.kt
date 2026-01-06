@@ -63,6 +63,10 @@ class MainActivity : AppCompatActivity() {
                 showProfileInfo()
                 true
             }
+            R.id.action_about -> {
+                startActivity(Intent(this, com.mytheclipse.anime.ui.AboutActivity::class.java))
+                true
+            }
             R.id.action_logout -> {
                 showLogoutConfirmation()
                 true
