@@ -10,13 +10,6 @@
         app:showAsAction="ifRoom" />
 
     <item
-        android:id="@+id/action_profile"
-        android:icon="@android:drawable/ic_menu_myplaces"
-        android:title="Profile"
-        app:iconTint="@color/text_primary"
-        app:showAsAction="never" />
-
-    <item
         android:id="@+id/action_about"
         android:icon="@android:drawable/ic_menu_info_details"
         android:title="About"
@@ -31,3 +24,4 @@
         app:showAsAction="never" />
 
 </menu>
+

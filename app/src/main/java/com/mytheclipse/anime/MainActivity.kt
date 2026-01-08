@@ -59,10 +59,6 @@ class MainActivity : AppCompatActivity() {
                 startActivity(Intent(this, SearchActivity::class.java))
                 true
             }
-            R.id.action_profile -> {
-                showProfileInfo()
-                true
-            }
             R.id.action_about -> {
                 startActivity(Intent(this, com.mytheclipse.anime.ui.AboutActivity::class.java))
                 true
@@ -139,25 +135,6 @@ class MainActivity : AppCompatActivity() {
         startActivity(intent)
     }
     
-    private fun showProfileInfo() {
-        val user = sessionManager.getUser()
-        val message = if (user != null) {
-            """
-            |Name: ${user.name ?: "N/A"}
-            |Email: ${user.email ?: "N/A"}
-            |Role: ${user.role}
-            |Email Verified: ${if (user.emailVerified) "Yes" else "No"}
-            """.trimMargin()
-        } else {
-            "User info not available"
-        }
-        
-        AlertDialog.Builder(this)
-            .setTitle("Profile")
-            .setMessage(message)
-            .setPositiveButton("OK", null)
-            .show()
-    }
     
     private fun showLogoutConfirmation() {
         AlertDialog.Builder(this)
