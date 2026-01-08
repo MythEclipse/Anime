@@ -9,14 +9,15 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.mytheclipse.anime.R
 import com.mytheclipse.anime.data.model.CompleteAnimeItem
-import com.mytheclipse.anime.databinding.ItemAnimeHorizontalBinding
+import android.view.View
+import com.mytheclipse.anime.databinding.ItemAnimeGridBinding
 
 class CompleteAnimeAdapter(
     private val onItemClick: (CompleteAnimeItem) -> Unit
 ) : ListAdapter<CompleteAnimeItem, CompleteAnimeAdapter.ViewHolder>(DiffCallback()) {
     
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val binding = ItemAnimeHorizontalBinding.inflate(
+        val binding = ItemAnimeGridBinding.inflate(
             LayoutInflater.from(parent.context),
             parent,
             false
@@ -29,7 +30,7 @@ class CompleteAnimeAdapter(
     }
     
     inner class ViewHolder(
-        private val binding: ItemAnimeHorizontalBinding
+        private val binding: ItemAnimeGridBinding
     ) : RecyclerView.ViewHolder(binding.root) {
         
         init {
@@ -43,7 +44,9 @@ class CompleteAnimeAdapter(
         
         fun bind(item: CompleteAnimeItem) {
             binding.tvTitle.text = item.title
-            binding.tvEpisode.text = "${item.episodeCount} Episodes"
+            binding.tvEpisode.text = "${item.episodeCount} Eps"
+            binding.tvStatus.text = "Completed"
+            binding.tvRating.visibility = View.GONE
             
             // Load poster image with Glide
             Glide.with(binding.ivPoster.context)

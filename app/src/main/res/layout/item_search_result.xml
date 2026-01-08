@@ -50,6 +50,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:textColor="@color/primary"
+                    android:textStyle="bold"
                     android:textSize="12sp" />
 
                 <TextView
@@ -57,7 +58,10 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textColor="@color/warning"
-                    android:textSize="12sp" />
+                    android:textSize="12sp" 
+                    android:drawableStart="@drawable/ic_star"
+                    android:drawableTint="@color/warning"
+                    android:drawablePadding="4dp"/>
             </LinearLayout>
 
             <TextView
