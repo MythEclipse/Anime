@@ -63,7 +63,71 @@ class AnimePlayerActivity : AppCompatActivity() {
             addJavascriptInterface(WebAppInterface(), "Android")
             
             webViewClient = WebViewClient()
-            webChromeClient = WebChromeClient()
+            webChromeClient = object : WebChromeClient() {
+                private var customView: View? = null
+                private var customViewCallback: CustomViewCallback? = null
+                private var originalSystemUiVisibility: Int = 0
+
+                override fun onShowCustomView(view: View?, callback: CustomViewCallback?) {
+                    if (customView != null) {
+                        onHideCustomView()
+                        return
+                    }
+
+                    customView = view
+                    customViewCallback = callback
+                    originalSystemUiVisibility = window.decorView.systemUiVisibility
+
+                    binding.fullscreenContainer.addView(
+                        customView,
+                        android.widget.FrameLayout.LayoutParams(
+                            android.widget.FrameLayout.LayoutParams.MATCH_PARENT,
+                            android.widget.FrameLayout.LayoutParams.MATCH_PARENT
+                        )
+                    )
+                    
+                    binding.fullscreenContainer.visibility = View.VISIBLE
+                    binding.webViewPlayer.visibility = View.GONE
+                    binding.toolbar.visibility = View.GONE
+                    binding.llEpisodeInfo.visibility = View.GONE
+                    binding.llNavigation.visibility = View.GONE
+                    binding.tvDownloadLabel.visibility = View.GONE
+                    binding.rvDownloadLinks.visibility = View.GONE
+
+                    // Immersive mode
+                    window.decorView.systemUiVisibility = (View.SYSTEM_UI_FLAG_FULLSCREEN
+                            or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                            or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+                            or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                            or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                            or View.SYSTEM_UI_FLAG_LAYOUT_STABLE)
+                }
+
+                override fun onHideCustomView() {
+                    binding.fullscreenContainer.visibility = View.GONE
+                    if (customView != null) {
+                        binding.fullscreenContainer.removeView(customView)
+                    }
+                    customView = null
+                    
+                    customViewCallback?.onCustomViewHidden()
+                    customViewCallback = null
+
+                    binding.webViewPlayer.visibility = View.VISIBLE
+                    binding.toolbar.visibility = View.VISIBLE
+                    binding.llEpisodeInfo.visibility = View.VISIBLE
+                    binding.llNavigation.visibility = View.VISIBLE
+                    
+                    // Restore download section visibility if data exists
+                    if (downloadAdapter.itemCount > 0) {
+                        binding.tvDownloadLabel.visibility = View.VISIBLE
+                        binding.rvDownloadLinks.visibility = View.VISIBLE
+                    }
+
+
+                    window.decorView.systemUiVisibility = originalSystemUiVisibility
+                }
+            }
         }
     }
 
@@ -213,6 +277,19 @@ class AnimePlayerActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         binding.webViewPlayer.onResume()
+    }
+    
+    @Deprecated("Deprecated in Java")
+    override fun onBackPressed() {
+        if (binding.webViewPlayer.webChromeClient != null) {
+            val client = binding.webViewPlayer.webChromeClient
+            // Check if we need to exit fullscreen (custom view is visible)
+            if (binding.fullscreenContainer.visibility == View.VISIBLE) {
+                client?.onHideCustomView()
+                return
+            }
+        }
+        super.onBackPressed()
     }
     
     override fun onDestroy() {
