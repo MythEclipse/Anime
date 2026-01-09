@@ -54,15 +54,27 @@ class AnimePlayerActivity : AppCompatActivity() {
         }
     }
     
-    @SuppressLint("SetJavaScriptEnabled")
+    @SuppressLint("SetJavaScriptEnabled", "AddJavascriptInterface")
     private fun setupWebView() {
         binding.webViewPlayer.apply {
             settings.javaScriptEnabled = true
             settings.domStorageEnabled = true
             settings.mediaPlaybackRequiresUserGesture = false
+            addJavascriptInterface(WebAppInterface(), "Android")
             
             webViewClient = WebViewClient()
             webChromeClient = WebChromeClient()
+        }
+    }
+
+    private inner class WebAppInterface {
+        @android.webkit.JavascriptInterface
+        fun resize(height: Float) {
+            runOnUiThread {
+                val params = binding.webViewPlayer.layoutParams
+                params.height = (height * resources.displayMetrics.density).toInt()
+                binding.webViewPlayer.layoutParams = params
+            }
         }
     }
     
@@ -156,27 +168,25 @@ class AnimePlayerActivity : AppCompatActivity() {
             <head>
                 <meta name="viewport" content="width=device-width, initial-scale=1.0">
                 <style>
-                    body { margin: 0; padding: 0; background: #000; }
-                    .video-container {
-                        position: relative;
-                        padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
-                        height: 0;
-                        overflow: hidden;
-                    }
-                    .video-container iframe {
-                        position: absolute;
-                        top: 0;
-                        left: 0;
-                        width: 100%;
-                        height: 100%;
-                        border: none;
+                    body { margin: 0; padding: 0; background: #000; overflow: hidden; }
+                    iframe { 
+                        display: block;
+                        width: 100%; 
+                        border: none; 
                     }
                 </style>
             </head>
             <body>
-                <div class="video-container">
-                    <iframe src="$streamUrl" allowfullscreen></iframe>
-                </div>
+                <iframe src="$streamUrl" allowfullscreen></iframe>
+                <script type="text/javascript">
+                    // Inform Android app about the content height
+                    function resize() {
+                        var height = document.body.scrollHeight;
+                        Android.resize(height);
+                    }
+                    window.onload = resize;
+                    window.onresize = resize;
+                </script>
             </body>
             </html>
         """.trimIndent()
