@@ -15,12 +15,25 @@
         android:orientation="vertical">
 
         <!-- Anime Poster -->
-        <ImageView
-            android:id="@+id/ivPoster"
+        <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="180dp"
-            android:contentDescription="Anime poster"
-            android:scaleType="centerCrop" />
+            android:layout_height="180dp">
+
+            <ImageView
+                android:id="@+id/ivPoster"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:contentDescription="Anime poster"
+                android:scaleType="centerCrop" />
+
+            <ProgressBar
+                android:id="@+id/progressBar"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_gravity="center"
+                android:visibility="gone" />
+
+        </FrameLayout>
 
         <!-- Anime Info -->
         <LinearLayout

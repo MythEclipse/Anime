@@ -14,7 +14,9 @@ import com.mytheclipse.anime.databinding.ItemAnimeHorizontalBinding
 class RecommendationAdapter(
     private val onItemClick: (Recommendation) -> Unit
 ) : ListAdapter<Recommendation, RecommendationAdapter.ViewHolder>(DiffCallback()) {
-    
+
+    private var clickedPosition: Int = RecyclerView.NO_POSITION
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val binding = ItemAnimeHorizontalBinding.inflate(
             LayoutInflater.from(parent.context),
@@ -23,28 +25,30 @@ class RecommendationAdapter(
         )
         return ViewHolder(binding)
     }
-    
+
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(getItem(position))
+        holder.bind(getItem(position), position == clickedPosition)
     }
-    
+
     inner class ViewHolder(
         private val binding: ItemAnimeHorizontalBinding
     ) : RecyclerView.ViewHolder(binding.root) {
-        
+
         init {
             binding.root.setOnClickListener {
                 val position = bindingAdapterPosition
-                if (position != RecyclerView.NO_POSITION) {
+                if (position != RecyclerView.NO_POSITION && clickedPosition == RecyclerView.NO_POSITION) {
+                    clickedPosition = position
+                    notifyItemChanged(position)
                     onItemClick(getItem(position))
                 }
             }
         }
-        
-        fun bind(item: Recommendation) {
+
+        fun bind(item: Recommendation, isLoading: Boolean) {
             binding.tvTitle.text = item.title
             binding.tvEpisode.text = item.type ?: item.status ?: ""
-            
+
             Glide.with(binding.ivPoster.context)
                 .load(item.poster)
                 .placeholder(R.drawable.placeholder_anime)
@@ -52,16 +56,27 @@ class RecommendationAdapter(
                 .transition(DrawableTransitionOptions.withCrossFade())
                 .centerCrop()
                 .into(binding.ivPoster)
+
+            binding.progressBar.visibility = if (isLoading) android.view.View.VISIBLE else android.view.View.GONE
+            binding.ivPoster.alpha = if (isLoading) 0.5f else 1.0f
         }
     }
-    
+
     private class DiffCallback : DiffUtil.ItemCallback<Recommendation>() {
         override fun areItemsTheSame(oldItem: Recommendation, newItem: Recommendation): Boolean {
             return oldItem.slug == newItem.slug
         }
-        
+
         override fun areContentsTheSame(oldItem: Recommendation, newItem: Recommendation): Boolean {
             return oldItem == newItem
+        }
+    }
+
+    fun resetSelection() {
+        val previous = clickedPosition
+        clickedPosition = RecyclerView.NO_POSITION
+        if (previous != RecyclerView.NO_POSITION) {
+            notifyItemChanged(previous)
         }
     }
 }

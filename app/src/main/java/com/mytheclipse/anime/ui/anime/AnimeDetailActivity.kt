@@ -142,4 +142,14 @@ class AnimeDetailActivity : AppCompatActivity() {
         intent.putExtra(EXTRA_SLUG, slug)
         startActivity(intent)
     }
+
+    override fun onResume() {
+        super.onResume()
+        if (::episodeAdapter.isInitialized) {
+            episodeAdapter.resetSelection()
+        }
+        if (::recommendationAdapter.isInitialized) {
+            recommendationAdapter.resetSelection()
+        }
+    }
 }
